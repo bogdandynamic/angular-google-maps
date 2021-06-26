@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { InfoWindowManager, MarkerManager } from '@agm/core';
 import { ClusterIconStyle, MarkerClustererOptions } from '@google/markerclustererplus';
+import { Cluster } from '@google/markerclustererplus/dist/cluster';
 import { Calculator } from '@google/markerclustererplus/dist/markerclusterer';
 import { ClusterManager } from '../services/managers/cluster-manager';
 
@@ -134,6 +135,8 @@ export class AgmMarkerCluster implements OnDestroy, OnChanges, OnInit, MarkerClu
   @Input() title: string;
 
   @Output() clusterClick: EventEmitter<void> = new EventEmitter<void>();
+  @Output() mouseOver: EventEmitter<Cluster> = new EventEmitter<Cluster>();
+  @Output() mouseOut: EventEmitter<Cluster> = new EventEmitter<Cluster>();
 
   private _observableSubscriptions: Subscription[] = [];
 
@@ -199,6 +202,14 @@ export class AgmMarkerCluster implements OnDestroy, OnChanges, OnInit, MarkerClu
       {
         name: 'clusterclick',
         handler: () => this.clusterClick.emit(),
+      },
+      {
+        name: 'mouseover',
+        handler: (cluster) => this.mouseOver.emit(cluster),
+      },
+      {
+        name: 'mouseout',
+        handler: (cluster) => this.mouseOut.emit(cluster),
       },
     ];
     handlers.forEach((obj) => {

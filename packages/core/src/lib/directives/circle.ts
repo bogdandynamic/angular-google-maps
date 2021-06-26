@@ -7,6 +7,11 @@ import { CircleManager } from '../services/managers/circle-manager';
   selector: 'agm-circle',
 })
 export class AgmCircle implements OnInit, OnChanges, OnDestroy {
+  private static _mapOptions: string[] = [
+    'fillColor', 'fillOpacity', 'strokeColor', 'strokeOpacity', 'strokePosition', 'strokeWeight',
+    'visible', 'zIndex', 'clickable',
+  ];
+
   /**
    * The latitude position of the circle (required).
    */
@@ -148,20 +153,18 @@ export class AgmCircle implements OnInit, OnChanges, OnDestroy {
 
   private _circleAddedToManager = false;
 
-  private static _mapOptions: string[] = [
-    'fillColor', 'fillOpacity', 'strokeColor', 'strokeOpacity', 'strokePosition', 'strokeWeight',
-    'visible', 'zIndex', 'clickable',
-  ];
-
   private _eventSubscriptions: Subscription[] = [];
 
   constructor(private _manager: CircleManager) {}
 
   /** @internal */
   ngOnInit() {
-    this._manager.addCircle(this);
-    this._circleAddedToManager = true;
-    this._registerEventListeners();
+    this._manager.addCircle(this).forEach((item) => {
+      item.then(() => {
+        this._circleAddedToManager = true;
+        this._registerEventListeners();
+      });
+    });
   }
 
   /** @internal */

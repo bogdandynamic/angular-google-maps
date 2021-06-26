@@ -15,6 +15,18 @@ import { RectangleManager } from '../services/managers/rectangle-manager';
   selector: 'agm-rectangle',
 })
 export class AgmRectangle implements OnInit, OnChanges, OnDestroy {
+  private static _mapOptions: string[] = [
+    'fillColor',
+    'fillOpacity',
+    'strokeColor',
+    'strokeOpacity',
+    'strokePosition',
+    'strokeWeight',
+    'visible',
+    'zIndex',
+    'clickable',
+  ];
+
   /**
    * The north position of the rectangle (required).
    */
@@ -166,27 +178,18 @@ export class AgmRectangle implements OnInit, OnChanges, OnDestroy {
 
   private _rectangleAddedToManager = false;
 
-  private static _mapOptions: string[] = [
-    'fillColor',
-    'fillOpacity',
-    'strokeColor',
-    'strokeOpacity',
-    'strokePosition',
-    'strokeWeight',
-    'visible',
-    'zIndex',
-    'clickable',
-  ];
-
   private _eventSubscriptions: Subscription[] = [];
 
   constructor(private _manager: RectangleManager) {}
 
   /** @internal */
   ngOnInit() {
-    this._manager.addRectangle(this);
-    this._rectangleAddedToManager = true;
-    this._registerEventListeners();
+    this._manager.addRectangle(this).forEach((item) => {
+      item.then(() => {
+        this._rectangleAddedToManager = true;
+        this._registerEventListeners();
+      });
+    });
   }
 
   /** @internal */
